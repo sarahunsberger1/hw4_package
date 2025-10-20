@@ -36,7 +36,7 @@ if (!require("devtools", quietly = TRUE)) {
 
 library(devtools)
 
-devtools::install_github("jh-adv-data-sci/project-4-r-packages-sarahunsberger1", build_vignettes = TRUE)
+devtools::install_github("sarahunsberger1/hw4_package", build_vignettes = TRUE)
 ```
 
 ## Example
