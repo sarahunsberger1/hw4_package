@@ -1,0 +1,98 @@
+---
+title: "hw4"
+output: rmarkdown::html_vignette
+bibliography: References.bib
+vignette: >
+  %\VignetteIndexEntry{hw4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(hw4)
+```
+
+## Introduction
+
+This vignette will go through each of the functions in the hw4 package. The purpose of the package is to assist you in determining the best study design for a treatment of Alzheimer's disease. This includes doing sample size calculations, a budget calculation and a visualization option.
+
+## Sample Size Calculations
+
+### Primary Outcome
+
+The primary outcome for this study is the difference in the change in the CDR- sum of boxes scores over one year from the treatment group to the control group. The power must be 0.9 with a significance level of 0.05. The function sample_size_calc in this package allows a user to specify the true difference in means (delta), the standard deviation (sd), if the user wants to use a bonferonni correction because they plan on including the secondary outcome (bonferonni), the significance level and if the test is one or two sided. The function will then return the number of participants needed in each group in the study.
+
+The function sample_size_calc has default values for delta and sd which come from other studies in Alzheimer's research. The default value for delta is 0.5 from a study that determined that 0.5 is the minimum clinically meaningful value for a change in CDR-SB score over one year [@tarawneh_search_2024]. The default value for sd is 1.08 from a study that looked at changes in CDR-SB score over one year for participants starting with a baseline CDR score of 0.5 meaning they had mild cognitive impairment [@williams_progression_2013].
+
+The following example shows the sample_size_calc function used with its default values. We can see that it reports n: the sample size needed for the specified values and the specified values.
+
+```{r}
+sample_size_calc()
+```
+
+The next example shows what would happen if the user wanted to use a bonferonni correction.
+
+```{r}
+sample_size_calc(bonferonni = TRUE)
+```
+
+Finally, this example shows different values used for delta, sd, alternative and type other than the default values.
+
+```{r}
+sample_size_calc(delta = 0.6, sd = 1.5, sig.level = 0.1, power = 0.8, alternative = 'one.sided', bonferonni = TRUE)
+```
+
+### Secondary Outcome
+
+The secondary outcome in this study is the difference in the change in volume of the hippocampus over one year from the treatment to control group. The collaborators want to investigate this outcome if possible after investigating the primary outcome. In this case you would use the sample_size_calc function with bonferonni set to TRUE because you are using a secondary outcome, and change the delta and sd values to values from the literature in change in volume of the hippocampus over one year (in percent). From preliminary research we have found that a good estimate of delta is 1.22 % and a good estimate of sd is 2.72 % [@hashimoto_does_2005]. 
+
+Here is an example calculation for the sample size needed for the secondary outcome to reach 0.9 power. 
+
+```{r}
+sample_size_calc(delta = 1.22, sd = 2.72, sig.level = 0.05, power = 0.9, alternative = 'two.sided', bonferonni = TRUE)
+```
+
+
+
+
+## Budget Calculation
+
+After calculating the sample size for each outcome, the user can use the function budget_calc to find out how much money they need for that number of participants. This function allows the user to input the number of participants in the study overall per group (n_primary) and how many follow up visits each participant will have where they measure CDR-SB (n_followup_primary). The user can then also set the number of participants that they want to use for the secondary outcome per group (n_secondary) and the number of follow up visits for the secondary outcome (n_followup secondary). The number of participants from each should come from the calculations done using the sample size calculations discussed above. The number of follow up visits is set as a default of one visit for both the primary and secondary outcome.
+
+This example shows the total budget when you have 100 people per group for the primary outcome and 50 people per group for the secondary outcome.
+
+```{r}
+budget_calc(n_primary = 100, n_secondary = 50)
+```
+
+This example shows the total budget when you have 100 people per group for the primary outcome and 50 people per group for the secondary outcome and for the primary outcome each participant has 2 follow up visits.
+
+```{r}
+budget_calc(n_primary = 100, n_secondary = 50, n_followup_primary = 2, n_followup_secondary = 1)
+```
+
+## Visualization
+
+This package also includes a function (plot_n) that allows users to create a heatmap that shows the number of participants needed per group to reach their desired power with different values of delta and sd. This can be used when trying to determine what a change in delta or sd would do for the study design. 
+
+The user inputs their desired power, which has a default of 0.9 because this is what we determined was necessary for the Alzheimers treatment. The user can also then determine a vector for the delta values and the sd values that they want to see on the x and y axes of their plot. The delta_start argument allows the user to input what value of delta the vector should start at, and the argument delta_end allows the user to input what value of delta the vector should end at. The length_vec argument then determines how many values of delta will be plotted in the heatmap. The arguments sd_start and sd_end similarly determine the vector of sd plotted. 
+
+This example shows the default heatmap plotted will all of the default values in the plot_n function.
+
+```{r}
+plot_n()
+```
+
+This example shows new values for the vectors of delta and sd. 
+
+```{r}
+plot_n(power = 0.8, delta_start = 0.4, delta_end = 0.6, sd_start = 0.9, sd_end = 1.2, length_vec = 10)
+```
+

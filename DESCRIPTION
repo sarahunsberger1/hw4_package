@@ -1,0 +1,19 @@
+Package: hw4
+Title: Study Planning Analysis for Alzheimers Treatment
+Version: 0.0.0.9000
+Authors@R: 
+    person("Sara", "Hunsberger", , "shunsbe2@jh.edu", role = c("aut", "cre"))
+Description: Allows users to vary study parameters and see their impact on the power and budget of an Alzheimers treatment trial.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    ggplot2,
+    stats
+VignetteBuilder: knitr
